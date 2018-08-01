@@ -9,12 +9,14 @@ void Graphs_P3::insertVertex(int vertex)
 {
 	cout << "test, test, test" << endl;
 	theGraph[vertex][vertex] = 0;
+	VCount++;
 }
 
 void Graphs_P3::insertEdge(int from, int to, int weight)
 {
 	cout << "test, test, test" << endl;
 	theGraph[from][to] = weight;
+	VCount += 2;
 }
 
 bool Graphs_P3::isEdge(int from, int to)
@@ -47,13 +49,14 @@ void Graphs_P3::printDijkstra(int source)
 	int cost[MAXNUMVERTICES][MAXNUMVERTICES], distance[MAXNUMVERTICES], pred[MAXNUMVERTICES];
 	int visited[MAXNUMVERTICES], count, mindistance, nextnode, i, j;
 
-	for (i = 0; i<50; i++)
+	for (i = 0; i<VCount; i++)
 		for (j = 0; j<50; j++)
-			if (theGraph[i][j] != 0)
-				cost[i][j] = theGraph[i][j];
+			if (theGraph[i][j] == 0 || theGraph[i][j] == -1)
+				cost[i][j] = a;	
 			else
-				cost[i][j] = a;
-	for (i = 0; i<50; i++)
+				cost[i][j] = theGraph[i][j];
+				
+	for (i = 0; i<VCount; i++)
 	{
 		distance[i] = cost[source][i];
 		pred[i] = source;
@@ -64,12 +67,12 @@ void Graphs_P3::printDijkstra(int source)
 	visited[source] = 1;
 	count = 1;
 
-	while (count<50 - 1)
+	while (count<VCount - 1)
 	{
 		mindistance = a;
 
 		//nextnode gives the node at minimum distance
-		for (i = 0; i<50; i++)
+		for (i = 0; i<VCount; i++)
 			if (distance[i]<mindistance && !visited[i])
 			{
 				mindistance = distance[i];
@@ -78,7 +81,7 @@ void Graphs_P3::printDijkstra(int source)
 
 		//check if a better path exists through nextnode            
 		visited[nextnode] = 1;
-		for (i = 0; i<50; i++)
+		for (i = 0; i<VCount; i++)
 			if (!visited[i])
 				if (mindistance + cost[nextnode][i]<distance[i])
 				{
@@ -88,7 +91,7 @@ void Graphs_P3::printDijkstra(int source)
 		count++;
 	}
 
-	for (i = 0; i<50; i++)
+	for (i = 0; i<VCount; i++)
 		if (i != source)
 		{
 			printf("\nDistance of node%d=%d", i, distance[i]);

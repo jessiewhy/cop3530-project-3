@@ -10,6 +10,7 @@ private:
 	//Graph data structure here or create another class to implement it
 	const static int MAXNUMVERTICES = 50;
 	int theGraph[MAXNUMVERTICES][MAXNUMVERTICES];
+	int VCount;
 public:
 	Graphs_P3() {
 		for (int i=0; i < MAXNUMVERTICES; i++)
@@ -27,6 +28,13 @@ public:
 	vector<int> getAdjacent(int vertex);  //return a vector of integers representing vertices adjacent to vertex
 	void printDijkstra(int source);  //prints result of running Dijkstra's algorithm with source vertex
 	void printGraph(); //prints graph in a format sorted by ascending vertex and edge list
+	~Graphs_P3() {
+		for (int i = 0; i<VCount; ++i)
+		{
+			delete[] theGraph[i];
+		}
+		delete[] theGraph;
+	}
 };
 
 
