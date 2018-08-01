@@ -7,37 +7,44 @@ using namespace std;
 
 void Graphs_P3::insertVertex(int vertex)
 {
+	cout << "test, test, test" << endl;
 	theGraph[vertex][vertex] = 0;
 }
 
 void Graphs_P3::insertEdge(int from, int to, int weight)
 {
+	cout << "test, test, test" << endl;
 	theGraph[from][to] = weight;
 }
 
 bool Graphs_P3::isEdge(int from, int to)
 {
+	cout << "test, test, test" << endl;
 	if (theGraph[from][to] != -1) return true;
 	else return false;
 }
 
 int Graphs_P3::getWeight(int from, int to)
 {
+	cout << "test, test, test" << endl;
 	return theGraph[from][to];
 }
 
+//FIXME: i don't actually know what this is doing
 vector<int> Graphs_P3::getAdjacent(int vertex) {
 	int j;
 	vector<int> myarr;
 
 	for (j = 0; j < 50; j++)
 		if (theGraph[vertex][j] != 0)  myarr.push_back(j);
-	cout << "test, test, test";
+	cout << "test, test, test"<<endl;
 	return myarr;
 }
 
+//FIXME: i definitely do not know what this is doing
 void Graphs_P3::printDijkstra(int source)
 {
+	cout << "test, test, test" << endl;
 	int cost[MAXNUMVERTICES][MAXNUMVERTICES], distance[MAXNUMVERTICES], pred[MAXNUMVERTICES];
 	int visited[MAXNUMVERTICES], count, mindistance, nextnode, i, j;
 
@@ -99,12 +106,14 @@ void Graphs_P3::printDijkstra(int source)
 
 void Graphs_P3::printGraph()
 {
+	cout << "test, test, test" << endl;
 	for (int i = 0; i < 50; i++)
 	{
 		for (int j = 0; j < 50; j++)
 		{
-			cout << theGraph[i][j] <<" "<<endl;
+			cout << theGraph[i][j] <<" ";
 		}
+		cout << endl;
 	}
 }
 
@@ -115,6 +124,7 @@ int main()
 	vector<int> arr;
 	int arrSize;
 	Graphs_P3 g;
+	cout << "test" << endl;
 	cin >> noOfLines;
 	for (int i = 0; i<noOfLines; i++)
 	{
