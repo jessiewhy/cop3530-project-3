@@ -1,122 +1,147 @@
-#include "Header.h"
-#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 #include <vector>
-#include <limits>
-int a = std::numeric_limits<int>::max();
+#include <iostream>
+#include <climits> 
+#include <cstdlib>
+#include <string>    
 using namespace std;
+#define V 50
 
+class Graphs_P3
+{
+private:
+	int myGraph[V][V] = { { 0 } };
+	bool myInit = 0;
+public:
+	void insertVertex(int vertex); //inserts new vertex in graph
+	void insertEdge(int from, int to, int weight);  //inserts new edge in graph
+	bool isEdge(int from, int to);  //returns true if there is an edge between the vertices from and to
+	int getWeight(int from, int to);  //returns the weight of the edge between the vertices from and to    
+	vector<int> getAdjacent(int vertex);  //return an array of integers representing vertices adjacent to vertex
+	void printDijkstra(int source);   //prints result of running Dijkstra algorithm with source vertex
+	void printGraph(); //prints graph in a format sorted by ascending vertex and edge list
+	int minimumDist(int dist[], bool Dset[]);
+	string printPath(int idx, int PreNode[], int source);
+
+}
+;
 void Graphs_P3::insertVertex(int vertex)
 {
-	cout << "test, test, test" << endl;
-	theGraph[vertex][vertex] = 0;
-	VCount++;
+	//printf("%d",vertex);
+	if (myInit == 0) {
+		for (int i=0; i < V; i++)
+			for (int j=0; j < V; j++)
+				myGraph[i][j] = 0;
+		myInit = 1;
+	}
+	myGraph[vertex][vertex] = -1;
 }
-
 void Graphs_P3::insertEdge(int from, int to, int weight)
 {
-	cout << "test, test, test" << endl;
-	theGraph[from][to] = weight;
-	VCount += 2;
+	myGraph[from][to] = weight;
 }
-
 bool Graphs_P3::isEdge(int from, int to)
 {
-	cout << "test, test, test" << endl;
-	if (theGraph[from][to] != -1) return true;
-	else return false;
+	bool myEdge = 0;
+	if (myGraph[from][to] != 0 && myGraph[from][to] != -1)  myEdge = 1;
+	return myEdge;
 }
-
 int Graphs_P3::getWeight(int from, int to)
 {
-	cout << "test, test, test" << endl;
-	return theGraph[from][to];
+	return myGraph[from][to];
 }
-
-vector<int> Graphs_P3::getAdjacent(int vertex) {
+vector<int> Graphs_P3::getAdjacent(int vertex)
+{
 	int j;
+	int vidx = 0;
 	vector<int> myarr;
 
-	for (j = 0; j < 50; j++)
-		if (theGraph[vertex][j] != 0 && theGraph[vertex][j] != -1)  myarr.push_back(j);
-	cout << "test, test, test"<<endl;
+	for (j = 0; j<V; j++)
+		if (myGraph[vertex][j] != 0 && myGraph[vertex][j] != -1)  myarr.push_back(j);
 	return myarr;
 }
 
-//FIXME: i definitely do not know what this is doing
-void Graphs_P3::printDijkstra(int source)
-{
-	cout << "test, test, test" << endl;
-	int cost[MAXNUMVERTICES][MAXNUMVERTICES], distance[MAXNUMVERTICES], pred[MAXNUMVERTICES];
-	int visited[MAXNUMVERTICES], count, mindistance, nextnode, i, j;
 
-	for (i = 0; i<VCount; i++)
-		for (j = 0; j<50; j++)
-			if (theGraph[i][j] == 0 || theGraph[i][j] == -1)
-				cost[i][j] = a;	
-			else
-				cost[i][j] = theGraph[i][j];
-				
-	for (i = 0; i<VCount; i++)
-	{
-		distance[i] = cost[source][i];
-		pred[i] = source;
-		visited[i] = 0;
-	}
-
-	distance[source] = 0;
-	visited[source] = 1;
-	count = 1;
-
-	while (count<VCount - 1)
-	{
-		mindistance = a;
-
-		//nextnode gives the node at minimum distance
-		for (i = 0; i<VCount; i++)
-			if (distance[i]<mindistance && !visited[i])
-			{
-				mindistance = distance[i];
-				nextnode = i;
-			}
-
-		//check if a better path exists through nextnode            
-		visited[nextnode] = 1;
-		for (i = 0; i<VCount; i++)
-			if (!visited[i])
-				if (mindistance + cost[nextnode][i]<distance[i])
-				{
-					distance[i] = mindistance + cost[nextnode][i];
-					pred[i] = nextnode;
-				}
-		count++;
-	}
-
-	for (i = 0; i<VCount; i++)
-		if (i != source)
-		{
-			printf("\nDistance of node%d=%d", i, distance[i]);
-			printf("\nPath=%d", i);
-
-			j = i;
-			do
-			{
-				j = pred[j];
-				printf("<-%d", j);
-			} while (j != source);
+void Graphs_P3::printGraph() {
+	for (int i = 0; i<V; i++) {
+		if (myGraph[i][i] == -1) {
+			cout << i << " ";
+			for (int j = 0; j<V; j++)
+				if (myGraph[i][j] > 0) cout << j << " ";
+			cout << "\n";
 		}
+	}
 }
 
-void Graphs_P3::printGraph()
+int Graphs_P3::minimumDist(int dist[], bool Dset[])   /*A method to find the vertex with minimum distance which is not yet included in Dset*/
 {
-	cout << "test, test, test" << endl;
-	for (int i = 0; i < 50; i++)
+	int min = INT_MAX, index;                 /*initialize min with the maximum possible value as infinity does not exist */
+	for (int v = 0; v<V; v++)
 	{
-		for (int j = 0; j < 50; j++)
+		if (Dset[v] == false && dist[v] <= min)
 		{
-			cout << theGraph[i][j] <<" ";
+			min = dist[v];
+			index = v;
 		}
-		cout << endl;
 	}
+	return index;
+}
+void Graphs_P3::printDijkstra(int source)   /*Method to implement shortest path algorithm*/
+{
+	int dist[V];
+	bool Dset[V];
+	int preNode[V];
+	for (int i = 0; i<V; i++)                    /*Initialize distance of all the vertex to INFINITY and Dset as false*/
+	{
+		dist[i] = INT_MAX;
+		Dset[i] = false;
+		preNode[i] = -1;
+	}
+	dist[source] = 0;                                   /*Initialize the distance of the source vertec to zero*/
+	for (int c = 0; c<V; c++)
+	{
+		int u = minimumDist(dist, Dset);              /*u is any vertex that is not yet included in Dset and has minimum distance*/
+		Dset[u] = true;                              /*If the vertex with minimum distance found include it to Dset*/
+		for (int v = 0; v<V; v++)
+			/*Update dist[v] if not in Dset and their is a path from src to v through u that has distance minimum than current value of dist[v]*/
+		{
+			if (!Dset[v] && myGraph[u][v] && dist[u] != INT_MAX && dist[u] + myGraph[u][v]<dist[v])
+			{
+				dist[v] = dist[u] + myGraph[u][v];
+				preNode[v] = u;
+			}
+		}
+	}
+	cout << "V D P" << endl;;
+	//	cout<<" "<<source<<"\n";
+	for (int i = 0; i<V; i++)                       /*will print the vertex with their distance from the source to the console */
+	{
+
+		if (dist[i] != INT_MAX && dist[i] == 0 && i != source && myGraph[i][i] != 0)  cout << i;
+		if (dist[i] != INT_MAX && dist[i] != 0 && i != source && myGraph[i][i] != 0) cout << i << " " << dist[i] << " " << printPath(i, preNode, source);
+
+	}
+}
+
+string Graphs_P3::printPath(int idx, int preNode[], int source) {
+
+	string myResult;
+	int i = idx;
+	// myResult = std::to_string(preNode[i]);
+
+
+	myResult = to_string(preNode[i]) + "-" + std::to_string(idx);
+
+	while (preNode[i] != source) {
+		i = preNode[i];
+		myResult = to_string(preNode[i]) + "-" + myResult;
+
+
+
+	}
+	//  myResult = to_string(source) + myResult;
+	return myResult;
 }
 
 int main()
@@ -126,7 +151,6 @@ int main()
 	vector<int> arr;
 	int arrSize;
 	Graphs_P3 g;
-	cout << "test" << endl;
 	cin >> noOfLines;
 	for (int i = 0; i<noOfLines; i++)
 	{
