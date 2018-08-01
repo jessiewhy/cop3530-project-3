@@ -30,13 +30,12 @@ int Graphs_P3::getWeight(int from, int to)
 	return theGraph[from][to];
 }
 
-//FIXME: i don't actually know what this is doing
 vector<int> Graphs_P3::getAdjacent(int vertex) {
 	int j;
 	vector<int> myarr;
 
 	for (j = 0; j < 50; j++)
-		if (theGraph[vertex][j] != 0)  myarr.push_back(j);
+		if (theGraph[vertex][j] != 0 && theGraph[vertex][j] != -1)  myarr.push_back(j);
 	cout << "test, test, test"<<endl;
 	return myarr;
 }
